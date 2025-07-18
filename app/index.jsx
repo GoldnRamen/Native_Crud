@@ -1,5 +1,6 @@
 import { Image, ImageBackground } from 'expo-image';
 import { Appearance, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -34,7 +35,7 @@ export default function HomeScreen() {
                   </Link>  
                 </View>
                 <View>
-                  <Link href={"/"} asChild>
+                  <Link href={"/allLists"} asChild>
                     <Pressable style={styles.iconText}>
                       <MaterialIcons name={'list'} size={20} color={"orange"}/>
                       <Text style={{color: "black"}}>See All Lists</Text>
