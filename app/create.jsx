@@ -4,8 +4,10 @@ import React, { useState } from 'react'
 import { FlatList, Pressable, View } from 'react-native'
 import { Appearance, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
+// import RNFS from 'react-native-fs'
 
 import { listData } from '@/constants/ListItems'
+import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
 
 export default function Create() {
     const Container = Platform.OS === "web" ? ScrollView : SafeAreaView
@@ -17,38 +19,65 @@ export default function Create() {
     const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
 
     const [todos, setTodos] = useState(listData.sort((a,b)=> b.id - a.id))
-        const [status, setStatus] = useState(false)
+    const [status, setStatus] = useState(false)
     
-        const [text, setText] = useState("")
 
-        const addList = ()=>{
-            if (text.trim()){
-                const newId = todos.length > 0 ? todos[0].id + 1 : 1
-                const todayDate = new Date()
-                const currentDate = `${todayDate.getDate()}-${todayDate.getMonth() + 1}-${todayDate.getFullYear()}`
-                setTodos([{id: newId, title: text, date_created: currentDate, status: status}, ...todos])
-                setText("")
-            }
+    // const filePath = RNFS.DocumentDirectoryPath + "/constants/ListItems.js"
+    // const saveToFile = async(todos) =>{
+    //     try {
+    //         const jsonData = JSON.stringify(todos, null, 2);
+    //         await RNFS.writeFile(filePath, jsonData, 'utf8');
+    //         console.log('File written successfully!');
+    //     } catch (err) {
+    //         console.error('File write error:', err);
+    //     }
+    // }
+
+    const [text, setText] = useState("")
+
+    // const addList = async()=>{
+    const addList = ()=>{
+        if (text.trim()){
+            const newId = todos.length > 0 ? todos[0].id + 1 : 1
+            const todayDate = new Date()
+            const currentDate = `${todayDate.getDate()}-${todayDate.getMonth() + 1}-${todayDate.getFullYear()}`
+            // setTodos([{id: newId, title: text, date_created: currentDate, status: status}, ...todos])
+            const newTodos = [
+                { id: newId, title: text, date_created: currentDate, status: status },
+                ...todos,
+            ];
+            setTodos(newTodos)
+
+            setText("")
+            // await saveToFile(newTodos)
         }
+    }
+    const deleteAllTasks = ()=>{
+        setTodos([])
+    }
   return (
     <Container style={styles.mainBody}>
         <View style={styles.searchBody}>
             <TextInput style={styles.searchBox} placeholder='Enter List Title' value={text} onChangeText={setText}/>
             <Pressable onPress={addList}><MaterialIcons name='add' size={30}  /></Pressable>
         </View>
+        <View>
+            <Pressable style={styles.iconText} onPress={()=>deleteAllTasks()}>
+                <MaterialIcons name={"delete"} size={20} color={"rgb(105, 13, 13)"}/>
+                <Text style={{color: "rgb(255, 255, 255)", }}>Delete All Lists</Text>
+            </Pressable>
+        </View>
         <FlatList
             data={todos}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator = {true}
-            ListEmptyComponent={<Text>No Content</Text>}
+            ListEmptyComponent={<Text style={{padding: 20, backgroundColor: "rgb(11, 41, 66)", color: "white"}}>No Content</Text>}
             renderItem = {({item}) => (
                 <View style={[styles.listName, {display: item.status === true ? "none" : "flex"}]}>
                     <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
-                        <Pressable onPress={()=>toggleStatus(item.id)}>
-                            <Text style={{fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none"}}>
-                                {item.title}
-                            </Text>
-                        </Pressable>
+                        <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none"}}>
+                            {item.title}
+                        </Text>
                         <View style={{flexDirection: "row", alignItems: "center", gap: 14}}>
                             <Entypo name="edit" size={20} color="rgb(8, 36, 73)" />
                             <MaterialIcons name="delete" size={20} color="rgb(80, 3, 3)" />
@@ -114,6 +143,13 @@ function createStyles(theme, colorScheme, randomColor1, randomColor2){
         borderRadius: 10,
         padding: 10,
         marginVertical: 10
+    },
+    iconText:{
+        flex: 1,
+        flexDirection: "row",
+        gap: 4,
+        padding: 20,
+        backgroundColor: "rgb(37, 158, 108)"
     }
     })
   };

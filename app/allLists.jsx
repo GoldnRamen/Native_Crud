@@ -1,20 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Colors } from '@/constants/Colors'
 import { Entypo, MaterialIcons } from '@expo/vector-icons'
 import { FlatList, Pressable, View } from 'react-native'
 import { Appearance, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput } from 'react-native'
+// import RNFS from "react-native-fs"
 
 import {listData} from "@/constants/ListItems"
+import { Link } from 'expo-router'
+
+import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
+import { ThemeContext, ThemeProvider } from '@/context/ThemeContext'
 
 export default function AllLists() {
     const Container = Platform.OS === "web" ? ScrollView : SafeAreaView
-    const colorScheme = Appearance.getColorScheme()
-    const theme = colorScheme === "dark"? Colors.dark : Colors.light    
+    // const colorScheme = Appearance.getColorScheme()
+    const {theme, colorScheme, setColorScheme} = useContext(ThemeContext)
+    // const theme = colorScheme === "dark"? Colors.dark : Colors.light    
     const randomColor1 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
     const randomColor2 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
 
     const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
     const [todos, setTodos] = useState(listData.sort((a,b)=> b.id - a.id))
+    const [loaded, error] = useFonts({ Inter_500Medium })
+    
+    if(!loaded && !error) return null
+    
+    // const filePath = RNFS.DocumentDirectoryPath + "/constants/ListItems.js"
 
     const toggleStatus = (id)=>{
         setTodos(todos.map(todo => todo.id === id ? {...todo, status: !todo.status} : todo))
@@ -22,7 +33,26 @@ export default function AllLists() {
     const deleteTask = (id)=>{
         setTodos(todos.filter(todo => todo.id !== id))
     }
+    const deleteAllTasks = ()=>{
+        setTodos(!listData)
+    }
 
+    // useEffect(() => {
+    //     const loadTodosFromFile = async () => {
+    //         try {
+    //         const fileExists = await RNFS.exists(filePath);
+    //         if (fileExists) {
+    //             const contents = await RNFS.readFile(filePath, 'utf8');
+    //             const loadedTodos = JSON.parse(contents);
+    //             setTodos(loadedTodos);
+    //         }
+    //         } catch (err) {
+    //         console.error('Error reading file:', err);
+    //         }
+    //     };
+
+    //     loadTodosFromFile();
+    // }, []);
 
     return (
         <Container style={styles.mainBody}>
@@ -30,16 +60,32 @@ export default function AllLists() {
                 <TextInput style={styles.searchBox} placeholder='Enter List Name' />
                 <MaterialIcons name='search' size={30}  />
             </View> */}
+            <View style={styles.toggleMode}>
+                <Pressable onPress={()=> setColorScheme( colorScheme === "dark" ? "light" : "dark")}>
+                    {colorScheme === "dark" ? 
+                        <MaterialIcons name="dark-mode" size={24} color={"rgb(219, 218, 218)"} />
+                        :
+                        <MaterialIcons name='light-mode' size={24} color={"rgb(230, 164, 22)"}/>
+
+                    }
+                </Pressable>
+            </View>
+            <View>
+                <Pressable style={styles.iconText} onPress={()=>deleteAllTasks()}>
+                    <MaterialIcons name={"delete"} size={20} color={"rgb(105, 13, 13)"}/>
+                    <Text style={{color: "rgb(255, 255, 255)", }}>Delete All Lists</Text>
+                </Pressable>
+            </View>
             <FlatList
                 data={todos}
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator = {true}
-                ListEmptyComponent={<Text>No Content</Text>}
+                ListEmptyComponent={<Text style={{padding: 20, backgroundColor: "rgb(11, 41, 66)", color: "white"}}>No Content</Text>}
                 renderItem = {({item}) => (
                     <View style={styles.listName}>
                         <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
                             <Pressable onPress={()=>toggleStatus(item.id)}>
-                                <Text style={{fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none"}}>
+                                <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(66, 66, 66)" : "black"}}>
                                     {item.title}
                                 </Text>
                             </Pressable>
@@ -68,7 +114,7 @@ export default function AllLists() {
                             </Text>
                         </View>
                     </View>
-                    )}>
+                )}>
 
             </FlatList>
 
@@ -78,10 +124,23 @@ export default function AllLists() {
 }
 function createStyles(theme, colorScheme, randomColor1, randomColor2){
    return StyleSheet.create({
+    toggleMode:{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        padding: 10,
+        // backgroundColor: colorScheme === "dark"? "rgb(51, 48, 48)" : "rgb(128, 192, 218)",
+        gap: 10,
+        position: "fixed",
+        top: 0,
+        right: 20,
+        zIndex: 50
+    },
     mainBody:{
         width: "100%",
         height: "100%",
-        overflowX: "scroll"
+        overflowX: "scroll",
+        backgroundColor: colorScheme === "dark" ? "black" : "white"
     },
     searchBody:{
         padding: 10,
@@ -109,6 +168,13 @@ function createStyles(theme, colorScheme, randomColor1, randomColor2){
         borderRadius: 10,
         padding: 10,
         marginVertical: 10
+    },
+    iconText:{
+        flex: 1,
+        flexDirection: "row",
+        gap: 4,
+        padding: 20,
+        backgroundColor: "rgb(37, 158, 108)"
     }
     })
   };

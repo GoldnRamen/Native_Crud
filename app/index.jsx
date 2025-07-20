@@ -14,10 +14,20 @@ import bgImg from "@/assets/images/clipboard-2693417_1280.jpg"
 import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
 
+import { Inter_300Light_Italic, Inter_500Medium } from '@expo-google-fonts/inter';
+import { useFonts } from '@expo-google-fonts/inter';
+
 export default function HomeScreen() {
     const colorScheme = Appearance.getColorScheme();
     const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
     const styles = createStyles(theme, colorScheme);
+
+    const [loaded, error] = useFonts({
+      Inter_500Medium
+    })
+    if(!loaded && !error){
+      return null
+    }
   return (
     <View style={styles.mainBody}>
         <ThemedView style={styles.titleContainer}>
@@ -39,14 +49,6 @@ export default function HomeScreen() {
                     <Pressable style={styles.iconText}>
                       <MaterialIcons name={'list'} size={20} color={"orange"}/>
                       <Text style={{color: "black"}}>See All Lists</Text>
-                    </Pressable>
-                  </Link>  
-                </View>
-                <View>
-                  <Link href={"/"} asChild>
-                    <Pressable style={styles.iconText}>
-                      <MaterialIcons name={"delete"} size={20} color={"red"}/>
-                      <Text style={{color: "black"}}>Delete All Lists</Text>
                     </Pressable>
                   </Link>  
                 </View>
