@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/Colors'
 import { Entypo, MaterialIcons } from '@expo/vector-icons'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FlatList, Pressable, View } from 'react-native'
 import { Appearance, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
@@ -8,11 +8,13 @@ import CheckBox from '@react-native-community/checkbox'
 
 import { listData } from '@/constants/ListItems'
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
+import { ThemeContext, ThemeProvider } from '@/context/ThemeContext'
 
 export default function Create() {
     const Container = Platform.OS === "web" ? ScrollView : SafeAreaView
-    const colorScheme = Appearance.getColorScheme()
-    const theme = colorScheme === "dark"? Colors.dark : Colors.light
+    // const colorScheme = Appearance.getColorScheme()
+    // const theme = colorScheme === "dark"? Colors.dark : Colors.light
+    const {theme, colorScheme, setColorScheme} = useContext(ThemeContext)
     const randomColor1 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
     const randomColor2 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
 
@@ -55,11 +57,19 @@ export default function Create() {
     const deleteAllTasks = ()=>{
         setTodos([])
     }
-  return (
+  return (        
     <Container style={styles.mainBody}>
+        
         <View style={styles.searchBody}>
             <TextInput style={styles.searchBox} placeholder='Enter List Title' value={text} onChangeText={setText}/>
-            <Pressable onPress={addList}><MaterialIcons name='add' size={30}  /></Pressable>
+            <Pressable onPress={addList}><MaterialIcons name='add' size={30}  style={{color: colorScheme === "dark" ? "white" : "black",}}/></Pressable>
+            <Pressable onPress={()=> setColorScheme( colorScheme === "dark" ? "light" : "dark")} style={styles.toggleMode}>
+                {/* {colorScheme === "dark" ? <MaterialIcons name='dark-mode'color={"rgb(219, 218, 218)"} size={24} />
+                :
+                <MaterialIcons name="light-mode" color={"rgb(230, 164, 22)"}  size={24} />
+                } */}
+                <MaterialIcons name={colorScheme === "dark" ? "dark-mode" : "light-mode" } color={colorScheme === "light" ? "rgb(230, 164, 22)" : "rgb(219, 218, 218)"} size={24}/>
+            </Pressable>
         </View>
         <View>
             <Pressable style={styles.iconText} onPress={()=>deleteAllTasks()}>
@@ -104,18 +114,24 @@ export default function Create() {
                 )}>
 
         </FlatList>
-
-
     </Container>
+   
     
   )
 }
 function createStyles(theme, colorScheme, randomColor1, randomColor2){
    return StyleSheet.create({
+    toggleMode: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        padding: 10
+    },
     mainBody:{
         width: "100%",
         height: "100%",
-        overflowX: "scroll"
+        overflowX: "scroll",
+        backgroundColor: colorScheme === "dark" ? "black" : "white",
     },
     searchBody:{
         padding: 10,
@@ -123,17 +139,18 @@ function createStyles(theme, colorScheme, randomColor1, randomColor2){
         gap: 3,
         alignItems: "center",
         width: "100%",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     searchBox:{
         flex: 1,
         marginRight: 5,
         borderWidth: 1,
         borderRadius: 20,
-        borderColor: "black",
+        borderColor: colorScheme === "dark" ? "white" : "black",
+        color: colorScheme === "dark" ? "white" : "black",
         padding: 15,
         width: "100%",
-        minWidth: 0
+        minWidth: 0,
     },
     listName: {
         width: "75%",
