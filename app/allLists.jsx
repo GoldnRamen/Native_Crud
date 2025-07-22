@@ -10,6 +10,8 @@ import { Link } from 'expo-router'
 
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
 import { ThemeContext, ThemeProvider } from '@/context/ThemeContext'
+import Animated, { LinearTransition, FadeInDown, FadeOutDown, FadeOut } from 'react-native-reanimated'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function AllLists() {
     const Container = Platform.OS === "web" ? ScrollView : SafeAreaView
@@ -22,6 +24,35 @@ export default function AllLists() {
     const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
     const [todos, setTodos] = useState(listData.sort((a,b)=> b.id - a.id))
     const [loaded, error] = useFonts({ Inter_500Medium })
+
+    useEffect(() => {
+        const fetchedData = async()=>{
+            try {
+                const jsonValue = await AsyncStorage.getItem("NewTodo")
+                const storedjsonValue = jsonValue != null ? JSON.parse(jsonValue) : null
+                if(storedjsonValue && storedjsonValue.length) setTodos(storedjsonValue.sort((a,b)=> b.id - a.id))
+                else{
+                    setTodos(listData.sort((a,b)=> b.id - a.id))
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchedData()
+    }, [listData]);
+
+    useEffect(()=>{
+        const storedData = async()=>{
+            try {
+                const jSonValue = JSON.stringify(todos)
+                // await storage.setItem(STORED_KEY, jSonValue)
+                await AsyncStorage.setItem("NewTodo", jSonValue)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        storedData()
+    }, [todos])
     
     if(!loaded && !error) return null
     
@@ -36,23 +67,7 @@ export default function AllLists() {
     const deleteAllTasks = ()=>{
         setTodos(!listData)
     }
-
-    // useEffect(() => {
-    //     const loadTodosFromFile = async () => {
-    //         try {
-    //         const fileExists = await RNFS.exists(filePath);
-    //         if (fileExists) {
-    //             const contents = await RNFS.readFile(filePath, 'utf8');
-    //             const loadedTodos = JSON.parse(contents);
-    //             setTodos(loadedTodos);
-    //         }
-    //         } catch (err) {
-    //         console.error('Error reading file:', err);
-    //         }
-    //     };
-
-    //     loadTodosFromFile();
-    // }, []);
+    
 
     return (
         <Container style={styles.mainBody}>
@@ -76,13 +91,18 @@ export default function AllLists() {
                     <Text style={{color: "rgb(255, 255, 255)", }}>Delete All Lists</Text>
                 </Pressable>
             </View>
-            <FlatList
+            <Animated.FlatList
                 data={todos}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item, index) => item.id.toString()}
                 showsVerticalScrollIndicator = {true}
+                itemLayoutAnimation={LinearTransition}
+                keyboardDismissMode={"on-drag"}
                 ListEmptyComponent={<Text style={{padding: 20, backgroundColor: "rgb(11, 41, 66)", color: "white"}}>No Content</Text>}
-                renderItem = {({item}) => (
-                    <View style={styles.listName}>
+                renderItem = {({item, index}) => (
+                    <Animated.View 
+                    entering={FadeInDown.delay(index * 100)}
+                    exiting={FadeOut}
+                    style={styles.listName}>
                         <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
                             <Pressable onPress={()=>toggleStatus(item.id)}>
                                 <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(66, 66, 66)" : "black"}}>
@@ -113,10 +133,10 @@ export default function AllLists() {
                                 {item.date_created}
                             </Text>
                         </View>
-                    </View>
+                    </Animated.View>
                 )}>
 
-            </FlatList>
+            </Animated.FlatList>
 
         </Container>
         
