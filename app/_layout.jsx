@@ -1,7 +1,7 @@
 import { useFonts } from 'expo-font';
-import { Stack, Tabs } from 'expo-router';
+import { Stack, Tabs, useRouter } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../context/ThemeContext';
 import { HapticTab } from '@/components/HapticTab';
@@ -10,6 +10,8 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
+
+import { useLocalSearchParams } from 'expo-router';
 
 
 export default function TabLayout() {
@@ -24,6 +26,9 @@ export default function TabLayout() {
       // Async font loading only occurs in development.
       return null;
     }
+
+    const { id } = useLocalSearchParams()
+  
   return (
     <ThemeProvider>
       <SafeAreaProvider>
@@ -31,6 +36,7 @@ export default function TabLayout() {
           <Stack.Screen name="index" options={{ title: "Home", headerShown: true, headerTintColor: "true" }} />
           <Stack.Screen name="create" options={{ title: "Create New List", headerShown: true, headerTintColor: "true" }} />
           <Stack.Screen name="allLists" options={{ title: "All Lists", headerShown: true, headerTintColor: "true" }} />
+          <Stack.Screen name="todos/[id]" options={{ title: `List Item: ${id}`, headerShown: true, headerTintColor: "true" }} /> /**Somewhat like in normal react using "/:id" for adressing */
           <Stack.Screen name="+not-found" />
         </Stack>
       </SafeAreaProvider>     

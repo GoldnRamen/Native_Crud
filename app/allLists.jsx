@@ -11,7 +11,9 @@ import { Link } from 'expo-router'
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
 import { ThemeContext, ThemeProvider } from '@/context/ThemeContext'
 import Animated, { LinearTransition, FadeInDown, FadeOutDown, FadeOut } from 'react-native-reanimated'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'expo-router'
 
 export default function AllLists() {
     const Container = Platform.OS === "web" ? ScrollView : SafeAreaView
@@ -24,6 +26,8 @@ export default function AllLists() {
     const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
     const [todos, setTodos] = useState(listData.sort((a,b)=> b.id - a.id))
     const [loaded, error] = useFonts({ Inter_500Medium })
+
+    const router = useRouter()
 
     useEffect(() => {
         const fetchedData = async()=>{
@@ -65,10 +69,12 @@ export default function AllLists() {
         setTodos(todos.filter(todo => todo.id !== id))
     }
     const deleteAllTasks = ()=>{
-        setTodos(!listData)
+        setTodos(listData.forEach(todo => todo.id !== id))
     }
     
-
+    const handleListItem = (id)=>{
+        router.push(`/todos/${id}`)
+    }
     return (
         <Container style={styles.mainBody}>
             {/* <View style={styles.searchBody}>
@@ -110,8 +116,10 @@ export default function AllLists() {
                                 </Text>
                             </Pressable>
                             <View style={{flexDirection: "row", alignItems: "center", gap: 14}}>
-                                <Entypo name="edit" size={24} color="rgb(8, 36, 73)" />
-                                <Pressable onPress={()=>deleteTask(item.id)}>
+                                <Pressable onPress={()=> handleListItem(item.id)}>
+                                    <Entypo name="edit" size={24} color="rgb(8, 36, 73)" />
+                                </Pressable>
+                                <Pressable onLongPress={()=>deleteTask(item.id)}>
                                     <MaterialIcons name="delete" size={24} color="rgb(80, 3, 3)" />
                                 </Pressable>
                             </View>
