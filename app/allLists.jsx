@@ -6,7 +6,7 @@ import { Appearance, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextI
 // import RNFS from "react-native-fs"
 
 import {listData} from "@/constants/ListItems"
-import { Link } from 'expo-router'
+import { Link, router, useRouter } from 'expo-router'
 
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
 import { ThemeContext, ThemeProvider } from '@/context/ThemeContext'
@@ -24,6 +24,7 @@ export default function AllLists() {
     const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
     const [todos, setTodos] = useState(listData.sort((a,b)=> b.id - a.id))
     const [loaded, error] = useFonts({ Inter_500Medium })
+    const router = useRouter()
 
     useEffect(() => {
         const fetchedData = async()=>{
@@ -68,6 +69,9 @@ export default function AllLists() {
         setTodos(!listData)
     }
     
+    const handlePress = (id)=>{
+        router.push(`/todos/${id}`)
+    }
 
     return (
         <Container style={styles.mainBody}>
@@ -110,7 +114,7 @@ export default function AllLists() {
                                 </Text>
                             </Pressable>
                             <View style={{flexDirection: "row", alignItems: "center", gap: 14}}>
-                                <Entypo name="edit" size={24} color="rgb(8, 36, 73)" />
+                                <Pressable onPress={()=> handlePress(item.id)}><Entypo name="edit" size={24} color="rgb(8, 36, 73)" /></Pressable>
                                 <Pressable onPress={()=>deleteTask(item.id)}>
                                     <MaterialIcons name="delete" size={24} color="rgb(80, 3, 3)" />
                                 </Pressable>

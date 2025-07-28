@@ -10,7 +10,9 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
+import { useLocalSearchParams } from 'expo-router';
 
+const {id} = useLocalSearchParams()
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,6 +33,7 @@ export default function TabLayout() {
           <Stack.Screen name="index" options={{ title: "Home", headerShown: true, headerTintColor: "true" }} />
           <Stack.Screen name="create" options={{ title: "Create New List", headerShown: true, headerTintColor: "true" }} />
           <Stack.Screen name="allLists" options={{ title: "All Lists", headerShown: true, headerTintColor: "true" }} />
+          <Stack.Screen name="todos/[id]" options={{ title: `Task Manager: ${id}`, headerShown: true, headerTintColor: "true" }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </SafeAreaProvider>     
