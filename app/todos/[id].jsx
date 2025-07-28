@@ -2,14 +2,15 @@ import { listData } from "@/constants/ListItems";
 import { ThemeContext } from "@/context/ThemeContext";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, TextInput, Pressable } from "react-native";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 
 export default function EditTitle(){
     const [todos, setTodos] = useState({})
     const { id } = useLocalSearchParams()
+    const router = useRouter()
 
     const {theme, colorScheme} = useContext(ThemeContext)
     const randomColor1 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
@@ -33,6 +34,25 @@ export default function EditTitle(){
         fetchStorageData(id)
     }, [id])
 
+    const handleSave = async()=>{
+        try {
+            const savedData = {...todos, title: todos.title}
+            const jsonValue = await AsyncStorage.getItem("NewTodo")
+            const storedData = jsonValue != null ? JSON.parse(jsonValue) : null
+
+            if (storedData && storedData.length){
+                const dropData = storedData.filter(todo => todo.id !== savedData.id)
+                const allNewData = [...dropData, savedData]
+                await AsyncStorage.setItem("NewTodo", JSON.stringify(allNewData))
+            }else{
+                await AsyncStorage.setItem("NewTodo", JSON.stringify[savedData])
+            }
+            router.push("/allLists")
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return(
         <SafeAreaView>
             {/* <Animated.View style={[styles.listName, {display: todos.status === true ? "none" : "flex"}]} */}
@@ -40,9 +60,9 @@ export default function EditTitle(){
             entering={FadeInDown.delay(100)}
             exiting={FadeOut}>
                 <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
-                    <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start"}}>
-                        {todos.title}
-                    </Text>
+                    <TextInput autoFocus={true} value={todos?.title || ""} onChangeText={(text)=>setTodos(prev => ({ ...prev, title: text}))} style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", borderColor: "rgb(245, 193, 49)", borderWidth: 2}}>
+                        
+                    </TextInput>
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                     <Text style={{fontStyle: "italic", fontWeight: 500, fontSize: 10}}>
@@ -53,6 +73,10 @@ export default function EditTitle(){
                     </Text>
                 </View>
             </Animated.View>
+            <View>
+                <Pressable onPress={()=>handleSave()}><Text>Save</Text></Pressable>
+                <Pressable onPress={()=> router.push("/allLists")}><Text>Cancel</Text></Pressable>
+            </View>
         </SafeAreaView>
     )
 }

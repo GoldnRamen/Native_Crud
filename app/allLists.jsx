@@ -109,7 +109,7 @@ export default function AllLists() {
                     style={styles.listName}>
                         <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
                             <Pressable onPress={()=>toggleStatus(item.id)}>
-                                <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(66, 66, 66)" : "black"}}>
+                                <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
                                     {item.title}
                                 </Text>
                             </Pressable>
