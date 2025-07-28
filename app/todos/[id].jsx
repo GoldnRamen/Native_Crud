@@ -12,10 +12,10 @@ export default function EditTitle(){
     const { id } = useLocalSearchParams()
     const router = useRouter()
 
-    const {theme, colorScheme} = useContext(ThemeContext)
+    const {theme, colorScheme, setColorScheme} = useContext(ThemeContext)
     const randomColor1 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
     const randomColor2 = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`
-    const styles = createStyles(theme, colorScheme, randomColor1, randomColor2)
+    const styles = createStyles(theme, colorScheme, randomColor1, randomColor2, setColorScheme)
     
     useEffect(()=>{
         const fetchStorageData = async(id)=>{
@@ -54,13 +54,23 @@ export default function EditTitle(){
     }
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style={styles.mainBody}>
+            <View style={styles.toggleMode}>
+                <Pressable onPress={()=> setColorScheme( colorScheme === "dark" ? "light" : "dark")}>
+                    {colorScheme === "dark" ? 
+                        <MaterialIcons name="dark-mode" size={24} color={"rgb(219, 218, 218)"} />
+                        :
+                        <MaterialIcons name='light-mode' size={24} color={"rgb(230, 164, 22)"}/>
+
+                    }
+                </Pressable>
+            </View>
             {/* <Animated.View style={[styles.listName, {display: todos.status === true ? "none" : "flex"}]} */}
             <Animated.View style={[styles.listName]}
             entering={FadeInDown.delay(100)}
             exiting={FadeOut}>
                 <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
-                    <TextInput autoFocus={true} value={todos?.title || ""} onChangeText={(text)=>setTodos(prev => ({ ...prev, title: text}))} style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", borderColor: "rgb(245, 193, 49)", borderWidth: 2}}>
+                    <TextInput autoFocus={true} value={todos?.title || ""} onChangeText={(text)=>setTodos(prev => ({ ...prev, title: text}))} style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, borderRadius: 5, fontWeight: 700, width: "100%", marginBottom: 10, alignSelf: "flex-start", borderColor: "rgb(245, 193, 49)", borderWidth: 2, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", color: todos.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
                         
                     </TextInput>
                 </View>
@@ -73,9 +83,9 @@ export default function EditTitle(){
                     </Text>
                 </View>
             </Animated.View>
-            <View>
-                <Pressable onPress={()=>handleSave()}><Text>Save</Text></Pressable>
-                <Pressable onPress={()=> router.push("/allLists")}><Text>Cancel</Text></Pressable>
+            <View style={styles.BtnContainer}>
+                <Pressable style={styles.saveBtn} onPress={()=>handleSave()}><Text style={styles.btnText}>Save</Text></Pressable>
+                <Pressable style={styles.closeBtn} onPress={()=> router.push("/allLists")}><Text style={styles.btnText}>Cancel</Text></Pressable>
             </View>
         </SafeAreaView>
     )
@@ -134,6 +144,35 @@ export function createStyles(theme, colorScheme, randomColor1){
             gap: 4,
             padding: 20,
             backgroundColor: "rgb(37, 158, 108)"
+        },
+        BtnContainer:{
+            marginLeft: 30,
+            marginTop: 10,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 20,
+            width: "50%"
+
+        },
+        saveBtn:{
+            padding: 15,
+            backgroundColor: colorScheme === "dark" ? "blue" : "transparent",
+            borderRadius: 5,
+            textAlign: "center",
+            borderWidth : colorScheme === "dark" ? 0 : 3,
+            borderColor : "blue"
+        },
+        closeBtn:{
+            padding: 15,
+            backgroundColor: colorScheme === "dark" ? "red" : "transparent",
+            borderRadius: 5,
+            textAlign: "center",
+            borderWidth : colorScheme === "dark" ? 0 : 3,
+            borderColor : "red"
+        },
+        btnText:{
+            color: colorScheme === "dark" ? "white" : "black"
         }
     })
 }
