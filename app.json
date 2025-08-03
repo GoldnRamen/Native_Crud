@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.goldnramen.CrudApp"
     },
     "web": {
       "bundler": "metro",
@@ -25,7 +26,6 @@
     },
     "plugins": [
       "expo-router",
-      // "react-native-mmkv",
       [
         "expo-splash-screen",
         {
@@ -38,6 +38,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e6426323-24a3-4527-99f3-1e5c047f20d7"
+      }
+    },
+    "owner": "goldnramen"
   }
 }

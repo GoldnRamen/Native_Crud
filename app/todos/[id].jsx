@@ -70,8 +70,7 @@ export default function EditTitle(){
             entering={FadeInDown.delay(100)}
             exiting={FadeOut}>
                 <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
-                    <TextInput autoFocus={true} value={todos?.title || ""} onChangeText={(text)=>setTodos(prev => ({ ...prev, title: text}))} style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, borderRadius: 5, fontWeight: 700, width: "100%", marginBottom: 10, alignSelf: "flex-start", borderColor: "rgb(245, 193, 49)", borderWidth: 2, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", color: todos.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
-                        
+                    <TextInput autoFocus={true} value={todos?.title || ""} onChangeText={(text)=>setTodos(prev => ({ ...prev, title: text}))} maxLength={35} style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, borderRadius: 5, fontWeight: 700, width: "100%", marginBottom: 10, alignSelf: "flex-start", borderColor: "rgb(245, 193, 49)", borderWidth: 2, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", color: todos.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>    
                     </TextInput>
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>

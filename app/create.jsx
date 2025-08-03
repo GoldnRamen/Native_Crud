@@ -89,7 +89,7 @@ export default function Create() {
         <Container style={styles.mainBody}>
             
             <View style={styles.searchBody}>
-                <TextInput style={styles.searchBox} placeholder='Enter List Title' value={text} onChangeText={setText}/>
+                <TextInput style={styles.searchBox} placeholder='Enter List Title' value={text} onChangeText={setText} maxLength={35}/>
                 <Pressable onPress={addList}><MaterialIcons name='add' size={30}  style={{color: colorScheme === "dark" ? "white" : "black",}}/></Pressable>
                 <Pressable onPress={()=> setColorScheme( colorScheme === "dark" ? "light" : "dark")} style={styles.toggleMode}>
                     {/* {colorScheme === "dark" ? <MaterialIcons name='dark-mode'color={"rgb(219, 218, 218)"} size={24} />
@@ -117,13 +117,9 @@ export default function Create() {
                     entering={FadeInDown.delay(index * 100)}
                     exiting={FadeOut}>
                         <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
-                            <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none"}}>
+                            <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: randomColor2, borderRadius: 5, fontWeight: 700, width: "100%", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
                                 {item.title}
                             </Text>
-                            <View style={{flexDirection: "row", alignItems: "center", gap: 14}}>
-                                <Entypo name="edit" size={20} color="rgb(8, 36, 73)" />
-                                <MaterialIcons name="delete" size={20} color="rgb(80, 3, 3)" />
-                            </View>
                         </View>
                         <View style={{flexDirection: "row", fontWeight: "500", justifyContent: "space-between", alignItems: "center", width: "100%"}}>
                             <Text style={{fontWeight: "500", fontSize: 10}}>

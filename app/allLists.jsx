@@ -109,17 +109,18 @@ export default function AllLists() {
                     style={styles.listName}>
                         <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center"}}>
                             <Pressable onPress={()=>toggleStatus(item.id)}>
-                                <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", borderRadius: 5, fontWeight: 700, width: "fit", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
+                                <Text style={{fontFamily: "Inter_500Medium", fontSize: 12, padding: 5, backgroundColor: colorScheme === "dark" ? "rgb(19, 19, 19)" : "white", borderRadius: 5, fontWeight: 700, width: "100%", marginBottom: 10, alignSelf: "flex-start", textDecorationLine: item.status === true ? "line-through" : "none", color: item.status === true ? "rgb(78, 78, 78)" : "rgb(255,255,255)" && colorScheme === "dark" ? "white" : "black" }}>
                                     {item.title}
                                 </Text>
                             </Pressable>
-                            <View style={{flexDirection: "row", alignItems: "center", gap: 14}}>
+                            <View style={{flexDirection: "row", alignItems: "center", gap:3, marginLeft: 2}}>
                                 <Pressable onPress={()=> handlePress(item.id)}><Entypo name="edit" size={24} color="rgb(8, 36, 73)" /></Pressable>
                                 <Pressable onPress={()=>deleteTask(item.id)}>
                                     <MaterialIcons name="delete" size={24} color="rgb(80, 3, 3)" />
                                 </Pressable>
                             </View>
                         </View>
+                        
                         <View style={{flexDirection: "row", fontWeight: "500", justifyContent: "space-between", alignItems: "center", width: "100%"}}>
                             <Text style={{fontWeight: "500", fontSize: 10}}>
                                 List Status:

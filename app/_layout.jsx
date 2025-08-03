@@ -30,10 +30,10 @@ export default function TabLayout() {
     <ThemeProvider>
       <SafeAreaProvider>
         <Stack screenOptions={{headerStyle: {backgroundColor: theme.headerBackground}}}>
-          <Stack.Screen name="index" options={{ title: "Home", headerShown: true, headerTintColor: "true" }} />
-          <Stack.Screen name="create" options={{ title: "Create New List", headerShown: true, headerTintColor: "true" }} />
-          <Stack.Screen name="allLists" options={{ title: "All Lists", headerShown: true, headerTintColor: "true" }} />
-          <Stack.Screen name="todos/[id]" options={{ title: `Task Manager: ${id}`, headerShown: true, headerTintColor: "true" }} />
+          <Stack.Screen name="index" options={{ title: "Home", headerShown: true, headerTintColor: "rgb(0,0,0)" }} />
+          <Stack.Screen name="create" options={{ title: "Create New List", headerShown: true, headerTintColor: "rgb(0,0,0)", }} />
+          <Stack.Screen name="allLists" options={{ title: "All Lists", headerShown: true, headerTintColor: "rgb(0,0,0)"}} />
+          <Stack.Screen name="todos/[id]" options={{ title: `Task Manager: ${id}`, headerShown: true, headerTintColor: "rgb(0,0,0)"}} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </SafeAreaProvider>     
